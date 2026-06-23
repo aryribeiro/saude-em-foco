@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db/client";
+import { getDb } from "@/lib/db/client";
 import { establishments } from "@/lib/db/schema";
 import { and, between, eq, sql } from "drizzle-orm";
 import { haversine } from "@/lib/validators/coordinates";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
+  const db = getDb();
   const searchParams = request.nextUrl.searchParams;
   const lat = parseFloat(searchParams.get("lat") ?? "");
   const lng = parseFloat(searchParams.get("lng") ?? "");

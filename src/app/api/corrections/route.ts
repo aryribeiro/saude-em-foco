@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db/client";
+import { getDb } from "@/lib/db/client";
 import { coordinateCorrections, establishments } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
+
+export const dynamic = "force-dynamic";
 
 const correctionSchema = z.object({
   coCnes: z.string().min(1),
@@ -11,6 +13,7 @@ const correctionSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const db = getDb();
   const searchParams = request.nextUrl.searchParams;
   const cnes = searchParams.get("cnes");
 
@@ -27,6 +30,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const db = getDb();
   try {
     const body = await request.json();
     const parsed = correctionSchema.parse(body);
@@ -48,7 +52,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-    await db
+    await getDb()
       .update(establishments)
       .set({
         latitude: parsed.latitude,
