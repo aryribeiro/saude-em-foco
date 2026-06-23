@@ -1,0 +1,195 @@
+"use client";
+
+import { useEffect } from "react";
+import dynamic from "next/dynamic";
+import { useSearch } from "@/hooks/useSearch";
+import CepSearchForm from "@/components/CepSearchForm";
+import EstablishmentList from "@/components/EstablishmentList";
+import EstablishmentCard from "@/components/EstablishmentCard";
+import ConfidenceBadge from "@/components/ConfidenceBadge";
+import WazeButton from "@/components/WazeButton";
+import Footer from "@/components/Footer";
+import { isRoutable } from "@/lib/validators/coordinates";
+import type { Coordinates } from "@/types";
+import { useState } from "react";
+
+const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
+const CorrectionModal = dynamic(
+  () => import("@/components/CorrectionModal"),
+  { ssr: false }
+);
+
+export default function Home() {
+  const { state, search, selectEstablishment, loadRoute, clear } = useSearch();
+  const [showingCorrection, setShowingCorrection] = useState(false);
+
+  const selectedEst =
+    state.establishments.length > 0
+      ? state.establishments[state.selectedIndex]
+      : null;
+
+  useEffect(() => {
+    if (!selectedEst || !state.userCoords) return;
+    if (!selectedEst.latitude || !selectedEst.longitude) return;
+
+    const from: Coordinates = state.userCoords;
+    const to: Coordinates = {
+      lat: selectedEst.latitude,
+      lng: selectedEst.longitude,
+    };
+
+    if (isRoutable(from, to)) {
+      loadRoute(from, to);
+    }
+  }, [selectedEst, state.userCoords, loadRoute]);
+
+  const confidence = 100;
+
+  return (
+    <div className="max-w-3xl mx-auto px-4 pb-8">
+      <h1 className="header-title">🩺 Saúde em Foco ❤️</h1>
+
+      <CepSearchForm
+        onSearch={search}
+        onClear={() => {
+          clear();
+          setShowingCorrection(false);
+        }}
+        loading={state.loading}
+      />
+
+      {state.error && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
+          {state.error}
+        </div>
+      )}
+
+      {state.cepData && (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">Endereço do CEP</h3>
+          <p>
+            <strong>Logradouro:</strong> {state.cepData.logradouro}
+          </p>
+          <p>
+            <strong>Bairro:</strong> {state.cepData.bairro}
+          </p>
+          <p>
+            <strong>Cidade/UF:</strong> {state.cepData.localidade}/
+            {state.cepData.uf}
+          </p>
+        </div>
+      )}
+
+      {state.noCoords && (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">
+            Estabelecimentos em {state.cepData?.localidade} sem Coordenadas
+          </h3>
+          <p className="font-bold mt-2">
+            Seu estabelecimento mais próximo não possui coordenadas geográficas.
+          </p>
+          {state.establishmentsWithoutCoords.length > 0 ? (
+            state.establishmentsWithoutCoords.map((est) => (
+              <div key={est.coCnes} className="border-t mt-3 pt-3">
+                <EstablishmentCard
+                  establishment={est}
+                  showDistance={false}
+                />
+              </div>
+            ))
+          ) : (
+            <p className="mt-2 text-blue-600">
+              Nenhum estabelecimento sem coordenadas encontrado em{" "}
+              {state.cepData?.localidade}.
+            </p>
+          )}
+        </div>
+      )}
+
+      {!state.noCoords && state.establishments.length > 0 && (
+        <>
+          <EstablishmentList
+            establishments={state.establishments}
+            selectedIndex={state.selectedIndex}
+            onSelect={(idx) => {
+              selectEstablishment(idx);
+              setShowingCorrection(false);
+            }}
+          />
+
+          {selectedEst && (
+            <div className="mt-4">
+              <EstablishmentCard establishment={selectedEst} />
+
+              {!showingCorrection &&
+                state.userCoords &&
+                selectedEst.latitude &&
+                selectedEst.longitude && (
+                  <>
+                    {state.routeLoading && (
+                      <p className="text-gray-500 mt-2">Gerando mapa e rota...</p>
+                    )}
+                    <MapView
+                      userCoords={state.userCoords}
+                      estCoords={{
+                        lat: selectedEst.latitude,
+                        lng: selectedEst.longitude,
+                      }}
+                      estName={selectedEst.noFantasia ?? "Estabelecimento"}
+                      route={state.route}
+                      confidence={confidence}
+                    />
+
+                    {!state.route && !state.routeLoading && (
+                      <p className="text-yellow-600 mt-2 text-sm">
+                        Não foi possível gerar a rota detalhada, mas o mapa mostra
+                        as localizações.
+                      </p>
+                    )}
+
+                    <ConfidenceBadge confidence={confidence} />
+
+                    {confidence < 70 && (
+                      <button
+                        onClick={() => setShowingCorrection(true)}
+                        className="mt-2 text-sm text-orange-600 underline"
+                      >
+                        Esta localização está incorreta?
+                      </button>
+                    )}
+
+                    <WazeButton
+                      lat={selectedEst.latitude}
+                      lng={selectedEst.longitude}
+                    />
+                  </>
+                )}
+
+              {showingCorrection &&
+                state.userCoords &&
+                selectedEst.latitude &&
+                selectedEst.longitude && (
+                  <CorrectionModal
+                    estCoords={{
+                      lat: selectedEst.latitude,
+                      lng: selectedEst.longitude,
+                    }}
+                    userCoords={state.userCoords}
+                    estName={selectedEst.noFantasia ?? "Estabelecimento"}
+                    coCnes={selectedEst.coCnes}
+                    onSave={() => {
+                      setShowingCorrection(false);
+                      search(state.cepData?.cep ?? "");
+                    }}
+                    onCancel={() => setShowingCorrection(false)}
+                  />
+                )}
+            </div>
+          )}
+        </>
+      )}
+
+      <Footer />
+    </div>
+  );
+}
