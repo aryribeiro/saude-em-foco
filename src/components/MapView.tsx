@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import type { Coordinates, RouteGeometry } from "@/types";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 
 interface MapViewProps {
   userCoords: Coordinates;
