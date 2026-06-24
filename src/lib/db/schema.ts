@@ -18,6 +18,7 @@ export const establishments = sqliteTable(
     longitude: real("longitude"),
     nuTelefone: text("nu_telefone"),
     dsTurnoAtendimento: text("ds_turno_atendimento"),
+    tpUnidade: integer("tp_unidade"),
     hasCoords: integer("has_coords").notNull().default(0),
     createdAt: text("created_at").notNull().default("datetime('now')"),
     updatedAt: text("updated_at").notNull().default("datetime('now')"),

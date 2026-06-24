@@ -1,25 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { geocodeFromCep, geocodeFromAddress } from "@/lib/services/opencage";
+import { geocodeBalanced } from "@/lib/services/geocode-balancer";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const cep = searchParams.get("cep");
   const address = searchParams.get("address");
-  const apiKey = process.env.OPENCAGE_API_KEY;
-
-  if (!apiKey) {
-    return NextResponse.json(
-      { coords: null, error: "Chave da API não configurada." },
-      { status: 500 }
-    );
-  }
+  const apiKey = process.env.OPENCAGE_API_KEY ?? "";
 
   if (cep) {
-    const result = await geocodeFromCep(cep, apiKey);
+    const result = await geocodeBalanced(cep, apiKey);
     if (result.coords) return NextResponse.json(result);
 
     if (address) {
-      const fallback = await geocodeFromAddress(address, apiKey);
+      const fallback = await geocodeBalanced(address, apiKey);
       return NextResponse.json(fallback);
     }
 
@@ -27,7 +20,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (address) {
-    const result = await geocodeFromAddress(address, apiKey);
+    const result = await geocodeBalanced(address, apiKey);
     return NextResponse.json(result);
   }
 

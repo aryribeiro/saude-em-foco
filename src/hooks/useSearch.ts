@@ -37,7 +37,7 @@ const initialState: SearchState = {
 export function useSearch() {
   const [state, setState] = useState<SearchState>(initialState);
 
-  const search = useCallback(async (cep: string) => {
+  const search = useCallback(async (cep: string, types: string[]) => {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
@@ -68,9 +68,10 @@ export function useSearch() {
       }
 
       const userCoords: Coordinates = geoJson.coords;
+      const typesParam = types.join(",");
 
       const estRes = await fetch(
-        `/api/establishments?lat=${userCoords.lat}&lng=${userCoords.lng}&limit=5`
+        `/api/establishments?lat=${userCoords.lat}&lng=${userCoords.lng}&limit=10&types=${encodeURIComponent(typesParam)}`
       );
       const estJson = await estRes.json();
 
