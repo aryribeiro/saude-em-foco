@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import L from "leaflet";
 import type { Coordinates, RouteGeometry } from "@/types";
 
 interface MapViewProps {
@@ -10,45 +11,14 @@ interface MapViewProps {
   route: RouteGeometry | null;
 }
 
-declare global {
-  interface Window {
-    L: typeof import("leaflet");
-  }
-}
-
-function waitForLeaflet(): Promise<typeof import("leaflet")> {
-  return new Promise((resolve) => {
-    if (window.L) {
-      resolve(window.L);
-      return;
-    }
-    const interval = setInterval(() => {
-      if (window.L) {
-        clearInterval(interval);
-        resolve(window.L);
-      }
-    }, 50);
-  });
-}
-
 export default function MapView({ userCoords, estCoords, estName, route }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    waitForLeaflet().then(() => setReady(true));
-  }, []);
+    if (!containerRef.current) return;
 
-  useEffect(() => {
-    if (!ready || !containerRef.current) return;
-
-    const L = window.L;
-
-    const map = L.map(containerRef.current, {
-      center: [userCoords.lat, userCoords.lng],
-      zoom: 14,
-    });
+    const map = L.map(containerRef.current).setView([userCoords.lat, userCoords.lng], 14);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
@@ -98,11 +68,11 @@ export default function MapView({ userCoords, estCoords, estName, route }: MapVi
       map.remove();
       mapRef.current = null;
     };
-  }, [ready, userCoords.lat, userCoords.lng, estCoords.lat, estCoords.lng, estName, route]);
+  }, [userCoords.lat, userCoords.lng, estCoords.lat, estCoords.lng, estName, route]);
 
   return (
-    <div className="mt-4 rounded-lg overflow-hidden border border-gray-300 shadow-sm">
-      <div ref={containerRef} style={{ height: "450px", width: "100%" }} />
+    <div className="mt-4 rounded-lg border border-gray-300 shadow-sm" style={{ height: "450px", width: "100%", overflow: "hidden" }}>
+      <div ref={containerRef} id="leaflet-map" style={{ height: "450px", width: "100%", position: "relative" }} />
     </div>
   );
 }

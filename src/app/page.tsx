@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useSearch } from "@/hooks/useSearch";
 import CepSearchForm from "@/components/CepSearchForm";
 import EstablishmentList from "@/components/EstablishmentList";
 import EstablishmentCard from "@/components/EstablishmentCard";
 import WazeButton from "@/components/WazeButton";
-import MapView from "@/components/MapView";
 import Footer from "@/components/Footer";
 import { isRoutable } from "@/lib/validators/coordinates";
 import type { Coordinates } from "@/types";
+
+const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
 
 export default function Home() {
   const { state, search, selectEstablishment, loadRoute, clear } = useSearch();
