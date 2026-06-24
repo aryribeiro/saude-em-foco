@@ -6,22 +6,15 @@ import { useSearch } from "@/hooks/useSearch";
 import CepSearchForm from "@/components/CepSearchForm";
 import EstablishmentList from "@/components/EstablishmentList";
 import EstablishmentCard from "@/components/EstablishmentCard";
-import ConfidenceBadge from "@/components/ConfidenceBadge";
 import WazeButton from "@/components/WazeButton";
 import Footer from "@/components/Footer";
 import { isRoutable } from "@/lib/validators/coordinates";
 import type { Coordinates } from "@/types";
-import { useState } from "react";
 
 const MapView = dynamic(() => import("@/components/MapView"), { ssr: false });
-const CorrectionModal = dynamic(
-  () => import("@/components/CorrectionModal"),
-  { ssr: false }
-);
 
 export default function Home() {
   const { state, search, selectEstablishment, loadRoute, clear } = useSearch();
-  const [showingCorrection, setShowingCorrection] = useState(false);
 
   const selectedEst =
     state.establishments.length > 0
@@ -41,22 +34,13 @@ export default function Home() {
     if (isRoutable(from, to)) {
       loadRoute(from, to);
     }
-  }, [selectedEst, state.userCoords, loadRoute]);
-
-  const confidence = 100;
+  }, [selectedEst?.coCnes, state.userCoords, loadRoute]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 pb-8">
       <h1 className="header-title">🩺 Saúde em Foco ❤️</h1>
 
-      <CepSearchForm
-        onSearch={search}
-        onClear={() => {
-          clear();
-          setShowingCorrection(false);
-        }}
-        loading={state.loading}
-      />
+      <CepSearchForm onSearch={search} onClear={clear} loading={state.loading} />
 
       {state.error && (
         <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700">
@@ -91,10 +75,7 @@ export default function Home() {
           {state.establishmentsWithoutCoords.length > 0 ? (
             state.establishmentsWithoutCoords.map((est) => (
               <div key={est.coCnes} className="border-t mt-3 pt-3">
-                <EstablishmentCard
-                  establishment={est}
-                  showDistance={false}
-                />
+                <EstablishmentCard establishment={est} showDistance={false} />
               </div>
             ))
           ) : (
@@ -111,18 +92,14 @@ export default function Home() {
           <EstablishmentList
             establishments={state.establishments}
             selectedIndex={state.selectedIndex}
-            onSelect={(idx) => {
-              selectEstablishment(idx);
-              setShowingCorrection(false);
-            }}
+            onSelect={selectEstablishment}
           />
 
           {selectedEst && (
             <div className="mt-4">
               <EstablishmentCard establishment={selectedEst} />
 
-              {!showingCorrection &&
-                state.userCoords &&
+              {state.userCoords &&
                 selectedEst.latitude &&
                 selectedEst.longitude && (
                   <>
@@ -137,7 +114,6 @@ export default function Home() {
                       }}
                       estName={selectedEst.noFantasia ?? "Estabelecimento"}
                       route={state.route}
-                      confidence={confidence}
                     />
 
                     {!state.route && !state.routeLoading && (
@@ -147,42 +123,11 @@ export default function Home() {
                       </p>
                     )}
 
-                    <ConfidenceBadge confidence={confidence} />
-
-                    {confidence < 70 && (
-                      <button
-                        onClick={() => setShowingCorrection(true)}
-                        className="mt-2 text-sm text-orange-600 underline"
-                      >
-                        Esta localização está incorreta?
-                      </button>
-                    )}
-
                     <WazeButton
                       lat={selectedEst.latitude}
                       lng={selectedEst.longitude}
                     />
                   </>
-                )}
-
-              {showingCorrection &&
-                state.userCoords &&
-                selectedEst.latitude &&
-                selectedEst.longitude && (
-                  <CorrectionModal
-                    estCoords={{
-                      lat: selectedEst.latitude,
-                      lng: selectedEst.longitude,
-                    }}
-                    userCoords={state.userCoords}
-                    estName={selectedEst.noFantasia ?? "Estabelecimento"}
-                    coCnes={selectedEst.coCnes}
-                    onSave={() => {
-                      setShowingCorrection(false);
-                      search(state.cepData?.cep ?? "");
-                    }}
-                    onCancel={() => setShowingCorrection(false)}
-                  />
                 )}
             </div>
           )}
