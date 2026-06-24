@@ -52,13 +52,8 @@ export async function GET(request: NextRequest) {
   // Parse types filter
   const tpValues = parseTypes(types);
 
-  // First try within 1km (DELTA ~0.009 degrees)
-  let results = await searchByRadius(db, lat, lng, 0.009, tpValues, limit);
-
-  // If not enough results within 1km, expand to 15km (DELTA ~0.135 degrees)
-  if (results.length === 0) {
-    results = await searchByRadius(db, lat, lng, 0.135, tpValues, limit);
-  }
+  // Search within 20km (DELTA ~0.18 degrees)
+  const results = await searchByRadius(db, lat, lng, 0.18, tpValues, limit);
 
   return NextResponse.json({
     establishments: results,
@@ -101,7 +96,7 @@ async function searchByRadius(
     .from(establishments)
     .where(and(...conditions));
 
-  const maxDistKm = delta === 0.009 ? 1 : 15;
+  const maxDistKm = 20;
 
   return rows
     .map((row) => ({
