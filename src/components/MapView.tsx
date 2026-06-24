@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import type { Coordinates, RouteGeometry } from "@/types";
-import L from "leaflet";
 
 interface MapViewProps {
   userCoords: Coordinates;
@@ -18,10 +17,13 @@ export default function MapView({
   route,
 }: MapViewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
+    if (typeof window === "undefined") return;
+
+    const L = require("leaflet") as typeof import("leaflet");
 
     delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)["_getIconUrl"];
     L.Icon.Default.mergeOptions({
@@ -78,11 +80,11 @@ export default function MapView({
 
     setTimeout(() => map.invalidateSize(), 200);
 
-    mapRef.current = map;
+    mapInstanceRef.current = map;
 
     return () => {
       map.remove();
-      mapRef.current = null;
+      mapInstanceRef.current = null;
     };
   }, [userCoords.lat, userCoords.lng, estCoords.lat, estCoords.lng, estName, route]);
 
