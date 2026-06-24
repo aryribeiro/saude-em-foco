@@ -1,11 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Saúde em Foco",
   description:
     "Encontre o estabelecimento de saúde mais próximo de você. Postos, hospitais, farmácias, laboratórios e clínicas do SUS.",
-  icons: { icon: "/favicon.ico" },
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩺</text></svg>",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ff0000",
 };
 
 export default function RootLayout({
@@ -19,11 +25,6 @@ export default function RootLayout({
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossOrigin=""
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
           crossOrigin=""
         />
       </head>

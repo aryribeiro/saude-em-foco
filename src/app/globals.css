@@ -43,3 +43,25 @@ body {
   height: 100% !important;
   z-index: 0;
 }
+
+/* Red scrollbar */
+* {
+  scrollbar-color: #ff0000 #f1f1f1;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff0000;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cc0000;
+}
