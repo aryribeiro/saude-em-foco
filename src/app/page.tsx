@@ -107,6 +107,7 @@ export default function Home() {
                       <p className="text-gray-500 mt-2">Gerando mapa e rota...</p>
                     )}
                     <MapView
+                      key={selectedEst.coCnes}
                       userCoords={state.userCoords}
                       estCoords={{
                         lat: selectedEst.latitude,

@@ -23,28 +23,6 @@ body {
   }
 }
 
-.map-section {
-  margin-top: 20px;
-  border: 2px solid black;
-  padding: 10px;
-  background-color: white;
-}
-
-.warning-msg {
-  background-color: #fff3cd;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  color: #856404;
-}
-
-.coord-correction {
-  background-color: #e8f4ff;
-  padding: 15px;
-  border-radius: 5px;
-  margin: 10px 0;
-}
-
 .waze-btn {
   background-color: #00aeef;
   color: black;
@@ -57,4 +35,11 @@ body {
 
 .waze-btn:hover {
   background-color: #008bbf;
+}
+
+/* Leaflet container fix */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
 }
