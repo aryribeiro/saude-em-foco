@@ -5,9 +5,6 @@ export const metadata: Metadata = {
   title: "Saúde em Foco",
   description:
     "Encontre o estabelecimento de saúde mais próximo de você. Postos, hospitais, farmácias, laboratórios e clínicas do SUS.",
-  icons: {
-    icon: "/favicon.png",
-  },
 };
 
 export const viewport: Viewport = {
@@ -21,6 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+        <script
+          src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          defer
+        ></script>
+      </head>
       <body className="min-h-screen">{children}</body>
     </html>
   );
