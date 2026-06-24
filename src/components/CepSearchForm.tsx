@@ -40,6 +40,8 @@ export default function CepSearchForm({
           className="w-full max-w-md rounded-md border border-gray-300 px-4 py-2.5 text-base outline-none focus:border-blue-500"
           maxLength={9}
           disabled={loading}
+          autoComplete="off"
+          name="cep-search"
         />
         <button
           type="submit"
