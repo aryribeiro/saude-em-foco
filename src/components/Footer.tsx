@@ -4,7 +4,7 @@ export default function Footer() {
       <p className="font-bold mb-3">🚗 Seja guiado via Waze!</p>
       <p className="text-xs text-gray-500 mt-4">
         openDataSUS | CNES | IBGE | ViaCEP | OpenCage | OpenRouteService |
-        OpenStreetMap | Nominatim | LocationIQ | Waze
+        OpenStreetMap | Nominatim | LocationIQ
       </p>
     </footer>
   );

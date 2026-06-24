@@ -19,6 +19,7 @@ body {
   font-size: 54px;
   font-weight: bold;
   padding: 20px;
+  word-spacing: -8px;
 }
 
 @media (max-width: 600px) {

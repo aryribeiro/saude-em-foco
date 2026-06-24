@@ -58,7 +58,8 @@ export default function CepSearchForm({
           value={cep}
           onChange={(e) => setCep(e.target.value)}
           placeholder="Digite um CEP válido (ex: 20210150)"
-          className="w-full max-w-md rounded-md border border-gray-300 px-4 py-2.5 text-base outline-none focus:border-blue-500"
+          className="w-auto rounded-md border border-gray-300 px-4 py-2.5 text-base outline-none focus:border-blue-500 text-center"
+          size={30}
           maxLength={9}
           disabled={loading}
           autoComplete="off"
