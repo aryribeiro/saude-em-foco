@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { MapContainer, TileLayer, Marker, Tooltip, Polyline, useMap } from "react-leaflet";
+import { useEffect } from "react";
+import L from "leaflet";
 import type { Coordinates, RouteGeometry } from "@/types";
 
 interface MapViewProps {
@@ -10,87 +12,67 @@ interface MapViewProps {
   route: RouteGeometry | null;
 }
 
-export default function MapView({
-  userCoords,
-  estCoords,
-  estName,
-  route,
-}: MapViewProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
+const userIcon = L.divIcon({
+  html: '<div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;font-size:22px;">🏠</div>',
+  className: "",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
+
+const estIcon = L.divIcon({
+  html: '<div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:#dc2626;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"><span style="color:white;font-size:16px;font-weight:bold;">+</span></div>',
+  className: "",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
+
+function FitBounds({ userCoords, estCoords }: { userCoords: Coordinates; estCoords: Coordinates }) {
+  const map = useMap();
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    if (typeof window === "undefined") return;
-
-    const L = require("leaflet") as typeof import("leaflet");
-
-    delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)["_getIconUrl"];
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    });
-
-    const map = L.map(containerRef.current, {
-      center: [userCoords.lat, userCoords.lng],
-      zoom: 14,
-    });
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
-      maxZoom: 19,
-    }).addTo(map);
-
-    const userIcon = L.divIcon({
-      html: '<div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;font-size:22px;">🏠</div>',
-      className: "",
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-
-    L.marker([userCoords.lat, userCoords.lng], { icon: userIcon })
-      .addTo(map)
-      .bindTooltip("Você está aqui");
-
-    const estIcon = L.divIcon({
-      html: '<div style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:#dc2626;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);"><span style="color:white;font-size:16px;font-weight:bold;">+</span></div>',
-      className: "",
-      iconSize: [32, 32],
-      iconAnchor: [16, 32],
-    });
-
-    L.marker([estCoords.lat, estCoords.lng], { icon: estIcon })
-      .addTo(map)
-      .bindTooltip(estName);
-
-    if (route && route.coordinates.length > 0) {
-      L.polyline(route.coordinates, {
-        color: "#2563eb",
-        weight: 4,
-        opacity: 0.8,
-      }).addTo(map);
-    }
-
     const bounds = L.latLngBounds([
       [userCoords.lat, userCoords.lng],
       [estCoords.lat, estCoords.lng],
     ]);
     map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
-
     setTimeout(() => map.invalidateSize(), 200);
+  }, [map, userCoords.lat, userCoords.lng, estCoords.lat, estCoords.lng]);
 
-    mapInstanceRef.current = map;
+  return null;
+}
 
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-    };
-  }, [userCoords.lat, userCoords.lng, estCoords.lat, estCoords.lng, estName, route]);
-
+export default function MapView({ userCoords, estCoords, estName, route }: MapViewProps) {
   return (
     <div className="mt-4 rounded-lg overflow-hidden border border-gray-300 shadow-sm">
-      <div ref={containerRef} style={{ height: "450px", width: "100%" }} />
+      <MapContainer
+        center={[userCoords.lat, userCoords.lng]}
+        zoom={14}
+        style={{ height: "450px", width: "100%" }}
+        scrollWheelZoom={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          maxZoom={19}
+        />
+
+        <Marker position={[userCoords.lat, userCoords.lng]} icon={userIcon}>
+          <Tooltip>Você está aqui</Tooltip>
+        </Marker>
+
+        <Marker position={[estCoords.lat, estCoords.lng]} icon={estIcon}>
+          <Tooltip>{estName}</Tooltip>
+        </Marker>
+
+        {route && route.coordinates.length > 0 && (
+          <Polyline
+            positions={route.coordinates}
+            pathOptions={{ color: "#2563eb", weight: 4, opacity: 0.8 }}
+          />
+        )}
+
+        <FitBounds userCoords={userCoords} estCoords={estCoords} />
+      </MapContainer>
     </div>
   );
 }

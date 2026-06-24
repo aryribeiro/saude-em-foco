@@ -27,11 +27,14 @@ export default function WazeButton({ lat, lng }: WazeButtonProps) {
         href={wazeUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-600 underline hover:text-blue-800"
+        className="text-red-600 font-medium underline hover:text-red-800"
       >
         Abrir no Waze
       </a>
-      <button onClick={handleCopy} className="waze-btn w-fit">
+      <button
+        onClick={handleCopy}
+        className="rounded-md bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 w-fit"
+      >
         {copied ? "Link copiado!" : "Copiar Link do Waze"}
       </button>
     </div>

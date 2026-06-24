@@ -6,10 +6,7 @@ export const metadata: Metadata = {
   description:
     "Encontre o estabelecimento de saúde mais próximo de você. Postos, hospitais, farmácias, laboratórios e clínicas do SUS.",
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
-    ],
+    icon: "/favicon.png",
   },
 };
 
