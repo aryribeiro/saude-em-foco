@@ -9,7 +9,7 @@ export default function Footer() {
       </p>
       <p className="text-xs text-gray-500 mt-4">
         openDataSUS | CNES | IBGE | ViaCEP | OpenCage | OpenRouteService |
-        OpenStreetMap | Nominatim | LocationIQ
+        OpenStreetMap | Geoapify
       </p>
     </footer>
   );

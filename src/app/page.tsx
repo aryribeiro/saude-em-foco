@@ -65,25 +65,14 @@ export default function Home() {
       )}
 
       {state.noCoords && (
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold">
-            Estabelecimentos em {state.cepData?.localidade} sem Coordenadas
-          </h3>
-          <p className="font-bold mt-2">
-            Seu estabelecimento mais próximo não possui coordenadas geográficas.
+        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
+          <p className="font-bold">
+            Nenhum estabelecimento do tipo selecionado encontrado em um raio de
+            20 km.
           </p>
-          {state.establishmentsWithoutCoords.length > 0 ? (
-            state.establishmentsWithoutCoords.map((est) => (
-              <div key={est.coCnes} className="border-t mt-3 pt-3">
-                <EstablishmentCard establishment={est} showDistance={false} />
-              </div>
-            ))
-          ) : (
-            <p className="mt-2 text-blue-600">
-              Nenhum estabelecimento sem coordenadas encontrado em{" "}
-              {state.cepData?.localidade}.
-            </p>
-          )}
+          <p className="mt-1 text-sm">
+            Tente selecionar outros tipos ou verifique o CEP informado.
+          </p>
         </div>
       )}
 

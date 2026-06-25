@@ -1,5 +1,5 @@
 import type { Coordinates } from "@/types";
-import { geocodeFromCep, geocodeFromAddress } from "./opencage";
+import { geocodeFromAddress } from "./opencage";
 import { geocodeGeoapify } from "./geoapify";
 
 type GeoResult = { coords: Coordinates | null; error: string | null };
@@ -29,23 +29,12 @@ export async function geocodeBalanced(
   query: string,
   apiKey: string
 ): Promise<GeoResult> {
-  const cacheKey = query.replace(/\D/g, "") || query.toLowerCase().trim();
+  const cacheKey = query.toLowerCase().trim();
 
   const cached = getCached(cacheKey);
   if (cached) return { coords: cached, error: null };
 
-  const isCep = /^\d{5}-?\d{3}$/.test(query.trim());
-
-  // CEP: OpenCage only (accurate for BR)
-  if (isCep) {
-    const result = await geocodeFromCep(query, apiKey);
-    if (result.coords) {
-      setCache(cacheKey, result.coords);
-      return result;
-    }
-  }
-
-  // Address: OpenCage first, Geoapify as fallback
+  // OpenCage with full address (CEP alone doesn't work for Brazil)
   const opencageResult = await geocodeFromAddress(query, apiKey);
   if (opencageResult.coords) {
     setCache(cacheKey, opencageResult.coords);

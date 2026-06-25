@@ -50,10 +50,10 @@ export function useSearch() {
       }
 
       const cepData: CepResult = cepJson.data;
-      const address = `${cepData.logradouro}, ${cepData.bairro}, ${cepData.localidade}, ${cepData.uf}`;
+      const address = `${cepData.logradouro}, ${cepData.bairro}, ${cepData.localidade}, ${cepData.uf}, Brazil`;
 
       const geoRes = await fetch(
-        `/api/geocode?cep=${encodeURIComponent(cep)}&address=${encodeURIComponent(address)}`
+        `/api/geocode?address=${encodeURIComponent(address)}`
       );
       const geoJson = await geoRes.json();
 
@@ -90,11 +90,6 @@ export function useSearch() {
           establishmentsWithoutCoords: [],
         }));
       } else {
-        const noCoordsRes = await fetch(
-          `/api/establishments?city=${encodeURIComponent(cepData.localidade)}`
-        );
-        const noCoordsJson = await noCoordsRes.json();
-
         setState((s) => ({
           ...s,
           loading: false,
@@ -102,7 +97,7 @@ export function useSearch() {
           userCoords,
           establishments: [],
           noCoords: true,
-          establishmentsWithoutCoords: noCoordsJson.establishments ?? [],
+          establishmentsWithoutCoords: [],
         }));
       }
     } catch {
