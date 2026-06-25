@@ -1,5 +1,6 @@
 import type { Coordinates } from "@/types";
 import { geocodeFromCep, geocodeFromAddress } from "./opencage";
+import { geocodeGeoapify } from "./geoapify";
 
 type GeoResult = { coords: Coordinates | null; error: string | null };
 
@@ -35,6 +36,7 @@ export async function geocodeBalanced(
 
   const isCep = /^\d{5}-?\d{3}$/.test(query.trim());
 
+  // CEP: OpenCage only (accurate for BR)
   if (isCep) {
     const result = await geocodeFromCep(query, apiKey);
     if (result.coords) {
@@ -43,10 +45,20 @@ export async function geocodeBalanced(
     }
   }
 
-  const result = await geocodeFromAddress(query, apiKey);
-  if (result.coords) {
-    setCache(cacheKey, result.coords);
-    return result;
+  // Address: OpenCage first, Geoapify as fallback
+  const opencageResult = await geocodeFromAddress(query, apiKey);
+  if (opencageResult.coords) {
+    setCache(cacheKey, opencageResult.coords);
+    return opencageResult;
+  }
+
+  const geoapifyKey = process.env.GEOAPIFY_API_KEY;
+  if (geoapifyKey) {
+    const geoapifyResult = await geocodeGeoapify(query, geoapifyKey);
+    if (geoapifyResult.coords) {
+      setCache(cacheKey, geoapifyResult.coords);
+      return geoapifyResult;
+    }
   }
 
   return { coords: null, error: "Não foi possível geocodificar o endereço." };
