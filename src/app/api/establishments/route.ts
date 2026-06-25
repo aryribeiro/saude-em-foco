@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const lat = parseFloat(searchParams.get("lat") ?? "");
   const lng = parseFloat(searchParams.get("lng") ?? "");
-  const limit = parseInt(searchParams.get("limit") ?? "10", 10);
+  const limit = parseInt(searchParams.get("limit") ?? "20", 10);
   const city = searchParams.get("city");
   const types = searchParams.get("types");
 

@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="mt-8 pb-4 text-center">
       <p className="font-bold mb-3 flex items-center justify-center gap-1">
-        <Image src="/waze.png" alt="Waze" width={18} height={18} />
+        <Image src="/waze.png" alt="Waze" width={22} height={22} />
         Seja guiado via Waze!
       </p>
       <p className="text-xs text-gray-500 mt-4">

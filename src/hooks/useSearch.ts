@@ -71,7 +71,7 @@ export function useSearch() {
       const typesParam = types.join(",");
 
       const estRes = await fetch(
-        `/api/establishments?lat=${userCoords.lat}&lng=${userCoords.lng}&limit=10&types=${encodeURIComponent(typesParam)}`
+        `/api/establishments?lat=${userCoords.lat}&lng=${userCoords.lng}&limit=20&types=${encodeURIComponent(typesParam)}`
       );
       const estJson = await estRes.json();
 
