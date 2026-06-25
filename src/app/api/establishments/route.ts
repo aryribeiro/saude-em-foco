@@ -7,8 +7,8 @@ import { haversine } from "@/lib/validators/coordinates";
 export const dynamic = "force-dynamic";
 
 const TYPE_MAP: Record<string, number[]> = {
-  postos: [1, 2],
-  hospitais: [5, 7, 15, 20, 73],
+  postos: [1, 2, 73],
+  hospitais: [5, 7, 15, 20],
   farmacias: [43],
   odontologia: [36],
   laboratorios: [4],
