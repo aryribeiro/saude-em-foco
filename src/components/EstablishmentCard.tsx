@@ -39,6 +39,11 @@ export default function EstablishmentCard({
           <strong>Distância:</strong> {establishment.distance.toFixed(2)} km
         </p>
       )}
+      {!establishment.hasCoords && (
+        <p className="mt-1 text-red-600 font-bold">
+          ⚠️ Estabelecimento Sem Coordenadas
+        </p>
+      )}
     </div>
   );
 }
