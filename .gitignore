@@ -44,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 old
+banco-2026
+backup
+outras*.txt

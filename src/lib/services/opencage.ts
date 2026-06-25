@@ -16,7 +16,8 @@ export async function geocodeFromCep(
   apiKey: string
 ): Promise<{ coords: Coordinates | null; error: string | null }> {
   const digits = cep.replace(/\D/g, "");
-  return geocode(`${digits}`, apiKey);
+  const formatted = `${digits.slice(0, 5)}-${digits.slice(5)}, Brazil`;
+  return geocode(formatted, apiKey);
 }
 
 export async function geocodeFromAddress(

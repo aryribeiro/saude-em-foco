@@ -8,11 +8,11 @@ export const dynamic = "force-dynamic";
 
 const TYPE_MAP: Record<string, number[]> = {
   postos: [1, 2],
-  hospitais: [5, 7, 15],
-  farmacias: [71],
+  hospitais: [5, 7, 15, 20, 73],
+  farmacias: [43],
   odontologia: [36],
   laboratorios: [4],
-  clinicas: [36],
+  clinicas: [36, 71],
 };
 
 export async function GET(request: NextRequest) {
