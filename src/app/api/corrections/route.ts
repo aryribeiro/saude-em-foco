@@ -57,7 +57,6 @@ export async function POST(request: NextRequest) {
       .set({
         latitude: parsed.latitude,
         longitude: parsed.longitude,
-        hasCoords: 1,
       })
       .where(eq(establishments.coCnes, parsed.coCnes));
 

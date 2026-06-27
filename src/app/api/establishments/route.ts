@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { establishments } from "@/lib/db/schema";
-import { and, between, eq, inArray, sql } from "drizzle-orm";
+import { and, between, inArray } from "drizzle-orm";
 import { haversine } from "@/lib/validators/coordinates";
 
 export const dynamic = "force-dynamic";
@@ -21,26 +21,7 @@ export async function GET(request: NextRequest) {
   const lat = parseFloat(searchParams.get("lat") ?? "");
   const lng = parseFloat(searchParams.get("lng") ?? "");
   const limit = parseInt(searchParams.get("limit") ?? "20", 10);
-  const city = searchParams.get("city");
   const types = searchParams.get("types");
-
-  if (city) {
-    const rows = await db
-      .select()
-      .from(establishments)
-      .where(
-        and(
-          eq(establishments.hasCoords, 0),
-          sql`UPPER(${establishments.cidade}) = UPPER(${city})`
-        )
-      )
-      .limit(20);
-
-    return NextResponse.json({
-      establishments: rows.map(mapRow),
-      type: "without_coords",
-    });
-  }
 
   if (isNaN(lat) || isNaN(lng)) {
     return NextResponse.json(
@@ -49,16 +30,10 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Parse types filter
   const tpValues = parseTypes(types);
-
-  // Search within 20km (DELTA ~0.18 degrees)
   const results = await searchByRadius(db, lat, lng, 0.18, tpValues, limit);
 
-  return NextResponse.json({
-    establishments: results,
-    type: "with_coords",
-  });
+  return NextResponse.json({ establishments: results });
 }
 
 function parseTypes(types: string | null): number[] {
@@ -82,7 +57,6 @@ async function searchByRadius(
   limit: number
 ) {
   const conditions = [
-    eq(establishments.hasCoords, 1),
     between(establishments.latitude, lat - delta, lat + delta),
     between(establishments.longitude, lng - delta, lng + delta),
   ];
@@ -128,6 +102,5 @@ function mapRow(row: typeof establishments.$inferSelect) {
     nuTelefone: row.nuTelefone ?? "Não informado",
     dsTurnoAtendimento: row.dsTurnoAtendimento ?? "Não informado",
     tpUnidade: row.tpUnidade,
-    hasCoords: row.hasCoords === 1,
   };
 }

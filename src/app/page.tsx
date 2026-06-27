@@ -64,7 +64,7 @@ export default function Home() {
         </div>
       )}
 
-      {state.noCoords && (
+      {state.noResults && (
         <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-yellow-800">
           <p className="font-bold">
             Nenhum estabelecimento do tipo selecionado encontrado em um raio de
@@ -76,7 +76,7 @@ export default function Home() {
         </div>
       )}
 
-      {!state.noCoords && state.establishments.length > 0 && (
+      {state.establishments.length > 0 && (
         <>
           <EstablishmentList
             establishments={state.establishments}

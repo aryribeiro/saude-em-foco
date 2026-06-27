@@ -26,22 +26,9 @@ export interface Establishment {
   longitude: number | null;
   nuTelefone: string | null;
   dsTurnoAtendimento: string | null;
-  hasCoords: boolean;
   distance?: number;
 }
 
 export interface RouteGeometry {
   coordinates: [number, number][];
-}
-
-export interface SearchState {
-  loading: boolean;
-  cepData: CepResult | null;
-  userCoords: Coordinates | null;
-  establishments: Establishment[];
-  selectedIndex: number;
-  route: RouteGeometry | null;
-  error: string | null;
-  noCoords: boolean;
-  establishmentsWithoutCoords: Establishment[];
 }

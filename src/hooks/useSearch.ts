@@ -16,8 +16,7 @@ interface SearchState {
   selectedIndex: number;
   route: RouteGeometry | null;
   error: string | null;
-  noCoords: boolean;
-  establishmentsWithoutCoords: Establishment[];
+  noResults: boolean;
   routeLoading: boolean;
 }
 
@@ -29,8 +28,7 @@ const initialState: SearchState = {
   selectedIndex: 0,
   route: null,
   error: null,
-  noCoords: false,
-  establishmentsWithoutCoords: [],
+  noResults: false,
   routeLoading: false,
 };
 
@@ -38,7 +36,7 @@ export function useSearch() {
   const [state, setState] = useState<SearchState>(initialState);
 
   const search = useCallback(async (cep: string, types: string[]) => {
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({ ...s, loading: true, error: null, noResults: false }));
 
     try {
       const cepRes = await fetch(`/api/cep?q=${encodeURIComponent(cep)}`);
@@ -75,10 +73,7 @@ export function useSearch() {
       );
       const estJson = await estRes.json();
 
-      if (
-        estJson.type === "with_coords" &&
-        estJson.establishments.length > 0
-      ) {
+      if (estJson.establishments && estJson.establishments.length > 0) {
         setState((s) => ({
           ...s,
           loading: false,
@@ -86,8 +81,7 @@ export function useSearch() {
           userCoords,
           establishments: estJson.establishments,
           selectedIndex: 0,
-          noCoords: false,
-          establishmentsWithoutCoords: [],
+          noResults: false,
         }));
       } else {
         setState((s) => ({
@@ -96,8 +90,7 @@ export function useSearch() {
           cepData,
           userCoords,
           establishments: [],
-          noCoords: true,
-          establishmentsWithoutCoords: [],
+          noResults: true,
         }));
       }
     } catch {
