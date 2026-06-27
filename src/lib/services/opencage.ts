@@ -6,7 +6,13 @@ const opencageResultSchema = z.object({
   results: z.array(
     z.object({
       geometry: z.object({ lat: z.number(), lng: z.number() }),
-      components: z.object({ country_code: z.string().optional() }).passthrough(),
+      confidence: z.number().optional(),
+      components: z
+        .object({
+          country_code: z.string().optional(),
+          _type: z.string().optional(),
+        })
+        .passthrough(),
     })
   ),
 });
@@ -43,13 +49,22 @@ async function geocode(
     );
 
     const parsed = opencageResultSchema.parse(data);
+    const LOW_PRECISION_TYPES = new Set([
+      "city",
+      "state",
+      "country",
+      "state_district",
+      "county",
+    ]);
+
     for (const result of parsed.results) {
-      if (result.components.country_code?.toLowerCase() === "br") {
-        return {
-          coords: { lat: result.geometry.lat, lng: result.geometry.lng },
-          error: null,
-        };
-      }
+      if (result.components.country_code?.toLowerCase() !== "br") continue;
+      const type = result.components._type ?? "";
+      if (LOW_PRECISION_TYPES.has(type)) continue;
+      return {
+        coords: { lat: result.geometry.lat, lng: result.geometry.lng },
+        error: null,
+      };
     }
 
     return { coords: null, error: "Nenhum resultado encontrado no Brasil." };
