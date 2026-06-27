@@ -11,6 +11,17 @@ export default function Footer() {
         openDataSUS | CNES | IBGE | ViaCEP | OpenCage | OpenRouteService |
         OpenStreetMap | Geoapify
       </p>
+      <p className="text-xs text-gray-400 mt-6 italic">
+        por{" "}
+        <a
+          href="https://www.linkedin.com/in/aryribeiro"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-bold not-italic hover:text-blue-500 transition-colors"
+        >
+          Ary Ribeiro
+        </a>
+      </p>
     </footer>
   );
 }
