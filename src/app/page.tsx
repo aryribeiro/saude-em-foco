@@ -7,6 +7,7 @@ import CepSearchForm from "@/components/CepSearchForm";
 import EstablishmentList from "@/components/EstablishmentList";
 import EstablishmentCard from "@/components/EstablishmentCard";
 import WazeButton from "@/components/WazeButton";
+import ReportButtons from "@/components/ReportButtons";
 import Footer from "@/components/Footer";
 import { isRoutable } from "@/lib/validators/coordinates";
 import type { Coordinates } from "@/types";
@@ -113,10 +114,13 @@ export default function Home() {
                       </p>
                     )}
 
-                    <WazeButton
-                      lat={selectedEst.latitude}
-                      lng={selectedEst.longitude}
-                    />
+                    <div className="flex justify-between items-start mt-3">
+                      <WazeButton
+                        lat={selectedEst.latitude}
+                        lng={selectedEst.longitude}
+                      />
+                      <ReportButtons coCnes={selectedEst.coCnes} />
+                    </div>
                   </>
                 )}
             </div>

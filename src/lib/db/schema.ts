@@ -20,6 +20,7 @@ export const establishments = sqliteTable(
     dsTurnoAtendimento: text("ds_turno_atendimento"),
     tpUnidade: integer("tp_unidade"),
     hasCoords: integer("has_coords").notNull().default(0),
+    reports: integer("reports").notNull().default(0),
     createdAt: text("created_at").notNull().default("datetime('now')"),
     updatedAt: text("updated_at").notNull().default("datetime('now')"),
   },
@@ -39,3 +40,18 @@ export const coordinateCorrections = sqliteTable("coordinate_corrections", {
   source: text("source").default("user"),
   createdAt: text("created_at").notNull().default("datetime('now')"),
 });
+
+export const reportLogs = sqliteTable(
+  "report_logs",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    coCnes: text("co_cnes").notNull(),
+    ipHash: text("ip_hash").notNull(),
+    deviceHash: text("device_hash").notNull(),
+    createdAt: text("created_at").notNull().default("datetime('now')"),
+  },
+  (table) => [
+    index("idx_report_logs_cnes").on(table.coCnes),
+    index("idx_report_logs_ip_device").on(table.ipHash, table.deviceHash),
+  ]
+);

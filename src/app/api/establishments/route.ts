@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db/client";
 import { establishments } from "@/lib/db/schema";
-import { and, between, inArray } from "drizzle-orm";
+import { and, between, inArray, sql } from "drizzle-orm";
 import { haversine } from "@/lib/validators/coordinates";
 
 export const dynamic = "force-dynamic";
@@ -59,6 +59,7 @@ async function searchByRadius(
   const conditions = [
     between(establishments.latitude, lat - delta, lat + delta),
     between(establishments.longitude, lng - delta, lng + delta),
+    sql`${establishments.reports} < 10`,
   ];
 
   if (tpValues.length > 0) {

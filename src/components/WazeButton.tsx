@@ -22,7 +22,7 @@ export default function WazeButton({ lat, lng }: WazeButtonProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2 mt-3">
+    <div className="flex flex-col gap-2">
       <a
         href={wazeUrl}
         target="_blank"
