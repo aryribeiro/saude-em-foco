@@ -1,4 +1,4 @@
-<img width="495" height="491" alt="image" src="https://github.com/user-attachments/assets/4a621d7f-7125-4aed-85ea-33ee09848724" />
+<p align="center"><img width="495" height="491" alt="image" src="https://github.com/user-attachments/assets/4a621d7f-7125-4aed-85ea-33ee09848724" /></p>
 
 O Saúde em Foco é um aplicativo web para localização e roteirização até estabelecimentos de saúde do SUS no Brasil.
 
