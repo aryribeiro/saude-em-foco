@@ -33,9 +33,9 @@ export default function WazeButton({ lat, lng }: WazeButtonProps) {
       </a>
       <button
         onClick={handleCopy}
-        className="rounded-md bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 w-fit"
+        className="rounded-md bg-red-600 px-3 py-1.5 text-sm text-white font-medium hover:bg-red-700 w-fit"
       >
-        {copied ? "Link copiado!" : "Copiar Link do Waze"}
+        {copied ? "Copiado!" : "Copiar Link"}
       </button>
     </div>
   );
