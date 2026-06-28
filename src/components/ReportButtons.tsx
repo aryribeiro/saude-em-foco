@@ -79,9 +79,9 @@ export default function ReportButtons({ coCnes }: ReportButtonsProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={openLightbox}
-            className="rounded-md bg-red-600 px-3 py-1.5 text-white font-semibold text-sm hover:bg-red-700 transition-colors"
+            className="rounded-md bg-red-600 px-3 py-1.5 text-white font-semibold text-xs hover:bg-red-700 transition-colors"
           >
-            Preciso de Ajuda
+            Ajuda
           </button>
           <button
             onClick={handleReport}

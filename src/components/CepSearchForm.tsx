@@ -93,9 +93,12 @@ export default function CepSearchForm({
         <button
           type="submit"
           disabled={loading || !cep.trim() || selectedTypes.length === 0}
-          className="rounded-md bg-red-600 px-6 py-2.5 text-white font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="rounded-md bg-red-600 px-6 py-2.5 text-white font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
-          {loading ? "Buscando..." : "Buscar"}
+          {loading && (
+            <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          )}
+          {loading ? "Buscando" : "Buscar"}
         </button>
       </form>
       <button
