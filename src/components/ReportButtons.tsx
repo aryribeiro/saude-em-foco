@@ -74,28 +74,30 @@ export default function ReportButtons({ coCnes }: ReportButtonsProps) {
 
   return (
     <>
-      <div className="flex items-center justify-end gap-2 mt-3">
-        <span className="text-sm text-gray-600 italic">O local não existe?</span>
-        <button
-          onClick={openLightbox}
-          className="rounded-md border-2 border-red-600 px-3 py-1.5 text-red-600 font-semibold text-sm hover:bg-red-50 transition-colors"
-        >
-          Preciso de Ajuda
-        </button>
-        <button
-          onClick={handleReport}
-          disabled={!okEnabled || loading || done}
-          className={`rounded-md px-4 py-1.5 font-semibold text-sm text-white transition-colors flex items-center gap-2 ${
-            okEnabled && !done
-              ? "bg-red-600 hover:bg-red-700 cursor-pointer"
-              : "bg-gray-400 cursor-not-allowed"
-          }`}
-        >
-          {loading && (
-            <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          )}
-          OK
-        </button>
+      <div className="flex flex-col items-end gap-1 mt-3">
+        <span className="text-sm text-red-600 font-medium">O local não existe?</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={openLightbox}
+            className="rounded-md bg-red-600 px-3 py-1.5 text-white font-semibold text-sm hover:bg-red-700 transition-colors"
+          >
+            Preciso de Ajuda
+          </button>
+          <button
+            onClick={handleReport}
+            disabled={!okEnabled || loading || done}
+            className={`rounded-md px-4 py-1.5 font-semibold text-sm text-white transition-colors flex items-center gap-2 ${
+              okEnabled && !done
+                ? "bg-red-600 hover:bg-red-700 cursor-pointer"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {loading && (
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            )}
+            OK
+          </button>
+        </div>
       </div>
 
       {done && (
